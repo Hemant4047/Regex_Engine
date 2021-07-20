@@ -93,8 +93,12 @@ public:
 // Matches any char, used for . operator
 // needs minRepeat and maxRepeat == 1
 class MatchAny : public RegexOperator {
+    bool dot;
+    bool digit;
+    bool alphaNumeric;
+    bool space;
 public:
-    MatchAny();
+    MatchAny(bool Dot, bool Digit, bool AlNumeric, bool Space);
 
     bool match(const string& s, Range& r) const;
     char identify() {return 'X';}

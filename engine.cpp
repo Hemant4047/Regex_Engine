@@ -183,8 +183,8 @@ bool match(vector<RegexOperator *> regex, const string &s)
 
 // int main()
 // {
-//     string regex = "abc";
-//     vector<string> table = {"abc", "abcd", "dabc", "dabcd", "a", ""};
+//     string regex = "[abcd]+\\d+_";
+//     vector<string> table = {"abc123_"};
 //     vector<RegexOperator *> parsedOperators;
 //     parsedOperators = parseRegex(regex);
 //     for(string i : table)

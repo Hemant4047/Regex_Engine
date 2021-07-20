@@ -78,11 +78,48 @@ bool MatchChar::match(const string &s, Range &r) const
     return true;
 }
 
-MatchAny :: MatchAny() {}
+MatchAny :: MatchAny(bool Dot, bool Digit, bool AlNumeric, bool Space) {
+    dot = Dot;
+    digit = Digit;
+    alphaNumeric = AlNumeric;
+    space = Space;
+}
 
 bool MatchAny :: match(const string &s, Range &r) const
 {
     if(r.start >= (int) s.length()) return false;
+
+    bool found=1;
+    if(dot) found = 1;
+    else if(digit)
+    {
+        if(s[r.start] >= '0' && s[r.start]<='9')
+            found = 1;
+        else 
+            found = 0;
+    }
+    else if(alphaNumeric)
+    {
+        if( (s[r.start] >= 'a' && s[r.start]<='z') || 
+            (s[r.start] >= 'A' && s[r.start]<='Z') ||
+            (s[r.start] >= '0' && s[r.start]<='9') ||
+            s[r.start] == '_' ) 
+            {
+                found = 1;
+            }
+        else    
+            found = 0;
+    }
+    else if(space)
+    {
+        if(s[r.start] == ' ')
+            found = 1;
+        else 
+            found = 0;
+    }
+    
+    if(!found) return false;
+
     r.end = r.start+1;
     return true;
 }
@@ -153,8 +190,8 @@ vector<RegexOperator *> parseRegex(const string &expr)
     size_t len = expr.length();
     for(size_t i=0; i<len; i++)
     {
-        RegexOperator* op;
-        size_t endIndex = i+1;
+        RegexOperator* op; 
+        size_t endIndex = i+1; // the end of curr-Substring in expr
         if(expr[i] == '[')
         {
             size_t startIndex = i;
@@ -182,16 +219,39 @@ vector<RegexOperator *> parseRegex(const string &expr)
         }
         else if(expr[i] == '\\')
         {
-            if(i+1 < len && (expr[i+1]=='.' || expr[i+1]=='\\'))
+            if(i+1 < len)
             {
+                if(expr[i+1]=='.' || expr[i+1]=='\\')
+                {
+                    endIndex = i+2;
+                    op = new MatchChar(expr[i+1]);
+                    parsed.push_back(op);
+                }
+                else if(expr[i+1]=='d') // "\d -> Matches nums between 0-9"
+                {
+                    endIndex = i+2; 
+                    op = new MatchAny(0, 1, 0, 0);
+                    parsed.push_back(op);
+                }
+                else if(expr[i+1]=='w') // "\w -> matches alphaNumeric and _"
+                {
+                    endIndex = i+2; 
+                    op = new MatchAny(0, 0, 1, 0);
+                    parsed.push_back(op);
+                }
+                else if(expr[i+1]=='s') // "\s -> matches a white space"
+                {
+                    endIndex = i+2; 
                 endIndex = i+2;
-                op = new MatchChar(expr[i+1]);
-                parsed.push_back(op);
+                    endIndex = i+2; 
+                    op = new MatchAny(0, 0, 0, 1);
+                    parsed.push_back(op);
+                }
             }
         }
-        else if(expr[i] == '.')
+        else if(expr[i] == '.') // "." -> matches any character.
         {
-            op = new MatchAny();
+            op = new MatchAny(1, 0, 0, 0);
             parsed.push_back(op);
         }
         else
@@ -239,7 +299,7 @@ void clearRegex(vector<RegexOperator *> regex)
 
 // int main()
 // {
-//     string regex = "ab+c?d*[ef]+g[^ghi]*j.+k";
+//     string regex = "a.*c";
 //     vector<RegexOperator *> parsedOperators;
 //     parsedOperators = parseRegex(regex);
 
