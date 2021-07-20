@@ -183,16 +183,26 @@ bool match(vector<RegexOperator *> regex, const string &s)
 
 // int main()
 // {
-//     string regex = "[abcd]+\\d+_";
-//     vector<string> table = {"abc123_"};
+//     string regex; 
+//     regex = "\\d{2,3}";
+//     vector<string> table = {"1000 or 10000?"};
+//     // string s;
+//     // cout<<"String : "; 
+//     // getline(cin, s);
+//     // cout<<"Enter regex : "; cin>>regex;
 //     vector<RegexOperator *> parsedOperators;
 //     parsedOperators = parseRegex(regex);
-//     for(string i : table)
+
+//     for(auto& i : table)
 //     {
 //         Range res = find(parsedOperators, i);
-//         cout<<"str : "<<i<<" -> ";
-//         cout<<match(parsedOperators, i)<<" : ";
-//         cout<<res.start<<" "<<res.end<<endl;
+//         if(res.start != -1 and res.end!=-1)
+//             cout<<"found: "<<i<<" at position -> ";
+//         else 
+//             cout<<"NOT FOUND\n";
+//         cout<<res.start<<" "<<res.end<<" in the string. "<<endl;
 //     }
+
+    
 //     return 0;
 // }

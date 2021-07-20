@@ -124,6 +124,13 @@ bool MatchAny :: match(const string &s, Range &r) const
     return true;
 }
 
+char MatchAny :: identify()
+{
+    if(dot) return '.';
+    if(digit) return '7';
+    if(alphaNumeric) return 'A';
+    return 'S';
+}
 
 MatchFromSubset :: MatchFromSubset(string s)
 {
@@ -136,12 +143,25 @@ bool MatchFromSubset :: match(const string &s, Range &r) const
     if(r.start >= (int)s.length()) return false;
     bool found=0;
     
-    for(int i=0; i<len; i++)  
-        if(str[i] == s[r.start])
+    for(int i=0; i<len; i++)
+    {
+        if(i+2 < len and str[i+1]=='-')
+        {
+            int startChar = str[i], endChar = str[i+2];
+            if(s[r.start]>=startChar and s[r.start]<=endChar)
+            {
+                found = 1;
+                break;
+            }
+            i = i+2;
+            continue;
+        }
+        else if(str[i] == s[r.start])
         {
             found = 1;
             break;
         }
+    }  
     
     if(found) r.end = r.start + 1;
     return found;
@@ -280,8 +300,34 @@ vector<RegexOperator *> parseRegex(const string &expr)
                 op->setMaxRepeat(1);
                 i = endIndex;
             }
+            else if(expr[endIndex] == '{') // endIndex points to start of operator
+            {
+                int minRep=-1, maxRep=-1;
+
+                if(endIndex+1 < len) minRep = expr[endIndex+1] - '0';
+                if(endIndex + 4 < len and expr[endIndex+2]==',' and expr[endIndex+4]=='}')
+                    maxRep = expr[endIndex+3]-'0';
+
+                if(minRep!=-1 and maxRep!=-1) // {2,3} type operators
+                {
+                    op->setMinRepeat(minRep);
+                    op->setMaxRepeat(maxRep);
+                    i = endIndex+4;
+                }
+                else if(endIndex+1 < len and expr[endIndex+2]=='}' and minRep != -1 and maxRep == -1)
+                {
+                    // {2} type operators
+                    op->setMinRepeat(minRep);
+                    op->setMaxRepeat(minRep);
+                    i = endIndex+2;
+                }
+            }
         }
-        if(i!=endIndex) i = endIndex - 1;
+        // if no operator found after curr unit, either endIndex = len or endIndex is not operator
+        // ab*c : endIndex = 2 for i==1, after calc i=2;
+        // ab{3,4}c : endIndex = 2 for i==1, after calculations i=6;
+        // so if not found then i<endIndex.
+        if(i < endIndex) i = endIndex - 1;
     }
 
     return parsed;
@@ -299,7 +345,7 @@ void clearRegex(vector<RegexOperator *> regex)
 
 // int main()
 // {
-//     string regex = "a.*c";
+//     string regex = "\\d{2,3}";
 //     vector<RegexOperator *> parsedOperators;
 //     parsedOperators = parseRegex(regex);
 

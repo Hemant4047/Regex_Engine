@@ -17,4 +17,4 @@ regex.o: regex.cpp
 	g++ -c regex.cpp
 
 clean: 
-	del *.o test_regex.exe
+	del *.o *.exe

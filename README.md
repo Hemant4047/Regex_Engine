@@ -9,13 +9,29 @@ It is implemented using backtracking algorithm and It supports the following Reg
 ## Supported Regex
 
 - List operator ([...] and [^...])
+- Ranged Expressions ([1-9A-V])
+- Sequence containing exact X characters ({X})
+- Sequence containing X to Y characters ({X,Y})
 - Match Zero or More operator (*)
 - Match One or More operator (+)
 - Match Zero or One operator (?)
+- Escape character to use . (\.)
 - Find a single character (.)
-- Some MetaCharacters (\d, \w, \s)
+- Finding any digit (\d)
+- Finding any Alpha-Numeric character (\w)
+- Finding space character (\s)
 
 
+## Screenshots
+
+- Sample run
+![App Screenshot](https://user-images.githubusercontent.com/62866353/126300891-6fe27e43-fa88-4680-a77c-910e4673cda7.png)
+
+- Tester's results
+![App Screenshot](https://user-images.githubusercontent.com/62866353/126296932-0446553c-c4b3-40d6-8d82-e58c18f5b035.png)
+
+
+  
 ## Documentation
 This is a brief Documentation about the structure of engine.
 
@@ -33,7 +49,7 @@ This is a brief Documentation about the structure of engine.
   
 ## Running Tests
 
-- There is an in-built tester program which tests, the program for various types of regex, this is implemented by me.
+- There is an in-built tester program which tests, the program for various types of regex, this is not implemented by me.
 - To run tests, run the following commands, I used a windows machine, for linux machines use make instead of mingw32-make
 
 ```bash
@@ -41,6 +57,4 @@ This is a brief Documentation about the structure of engine.
   test_regex.exe
 ```
 
-## Screenshots
-
-![Alt text](./screenShots/testing.jpg?raw=true "Optional Title")
+  

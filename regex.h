@@ -101,7 +101,7 @@ public:
     MatchAny(bool Dot, bool Digit, bool AlNumeric, bool Space);
 
     bool match(const string& s, Range& r) const;
-    char identify() {return 'X';}
+    char identify();
 };
 
 /* Implements the set, it stores the values in that set [...]
